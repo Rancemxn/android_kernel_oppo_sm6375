@@ -36,9 +36,7 @@ obj-$(CONFIG_OPLUS_FINGERPRINT)  += oplus_fp_drivers/
 obj-$(CONFIG_UFF_FINGERPRINT)  += uff_fp_drivers/
 #endif /*OPLUS_FEATURE_UFF_FINGERPRINT*/
 
-#ifdef OPLUS_FEATURE_SECURITY_COMMON
-obj-$(CONFIG_OPLUS_SECURE)  += oplus_secure_drivers/
-#endif /* OPLUS_FEATURE_SECURITY_COMMON */
+obj-y  += oplus_secure_drivers/
 
 obj-$(CONFIG_RMI4_CORE)		+= rmi4/
 obj-$(CONFIG_INPUT_HALL_SENSOR)    += hall/
