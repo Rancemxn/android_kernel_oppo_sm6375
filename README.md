@@ -48,6 +48,7 @@ git clone https://github.com/oppo-source/android_kernel_modules_and_devicetree_o
 ## 3. 处理 Android 内核与驱动依赖关系
 
 ```bash
+mv temp_modules/vendor ./vendor
 cp -r temp_modules/kernel/msm-5.4/techpack/* kernel/msm-5.4/techpack/
 rm -rf temp_modules
 ```
