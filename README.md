@@ -36,7 +36,7 @@ mkdir -p kernel
 ### 获取内核
 
 ```bash
-git clone https://github.com/Rancemxn/android_kernel_oppo_sm6375_PGGM10.git kernel/msm-5.4 --depth 1 -b oppo/sm6375_u_14.0.0_k10x_5g
+git clone https://github.com/Rancemxn/android_kernel_oppo_sm6375.git kernel/msm-5.4 --depth 1 -b main
 ```
 
 ### 获取驱动、设备树
@@ -48,7 +48,6 @@ git clone https://github.com/oppo-source/android_kernel_modules_and_devicetree_o
 ## 3. 处理 Android 内核与驱动依赖关系
 
 ```bash
-mv temp_modules/vendor ./vendor
 cp -r temp_modules/kernel/msm-5.4/techpack/* kernel/msm-5.4/techpack/
 rm -rf temp_modules
 ```
@@ -64,15 +63,14 @@ export OPPO_K10X_KernelPath=$(pwd)/kernel/msm-5.4
 ### 创建文件夹，环境变量
 
 ```bash
-cd $OPPO_K10X_RootPath
-mkdir Compiler
-export OPPO_K10X_Compiler=$(pwd)/Compiler
+mkdir compiler
+export OPPO_K10X_Compiler=$(pwd)/compiler
+cd $OPPO_K10X_Compiler
 ```
 
 ### 获取 Clang
 
 ```bash
-cd $OPPO_K10X_Compiler
 wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz -O clang-r383902b1.tar.gz
 mkdir -p clang-11.0.2
 tar -xzf clang-r383902b1.tar.gz -C clang-11.0.2
@@ -82,7 +80,6 @@ rm clang-r383902b1.tar.gz
 ### 获取 gcc
 
 ```bash
-cd $OPPO_K10X_Compiler
 git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 aarch64-linux-android-4.9 --depth=1
 git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 arm-linux-androideabi-4.9 --depth=1
 ```
@@ -90,16 +87,10 @@ git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-l
 ## 5. 配置环境参数
 
 ```bash
-export ARCH="arm64"
-export SUBARCH="arm64"
-export PATH="$OPPO_K10X_Compiler/clang-11.0.2/bin:$OPPO_K10X_Compiler/aarch64-linux-android-4.9/bin:$OPPO_K10X_Compiler/arm-linux-androideabi-4.9/bin:$PATH"
-export CC="ccache clang"
-export CROSS_COMPILE="aarch64-linux-android-"
-export CROSS_COMPILE_ARM32="arm-linux-androideabi-"
-export TRIPLE="aarch64-linux-gnu-"
-export CLANG_TRIPLE="aarch64-linux-gnu-"
-export CLANG_PATH=$OPPO_K10X_Compiler/clang-11.0.2/bin
-export USE_CCACHE=1
+cd $OPPO_K10X_KernelPath
+sed -i "s|export OPPO_K10X_RootPath=.*|export OPPO_K10X_RootPath=${OPPO_K10X_RootPath:-$(pwd)}|g" build.sh
+sed -i "s|export OPPO_K10X_KernelPath=.*|export OPPO_K10X_KernelPath=${OPPO_K10X_KernelPath:-$(pwd)/kernel/msm-5.4}|g" build.sh
+sed -i "s|export OPPO_K10X_Compiler=.*|export OPPO_K10X_Compiler=${OPPO_K10X_Compiler:-$(pwd)/Compiler}|g" build.sh
 ```
 
 ## 6. 编译
@@ -108,8 +99,7 @@ export USE_CCACHE=1
 
 ```bash
 cd $OPPO_K10X_KernelPath
-make O=out CC="ccache clang" PGGM10_defconfig
-make O=out CC="ccache clang" -j$(nproc)
+./build.sh
 ```
 
 *   命令完成后，输出在：`$OPPO_K10X_KernelPath/out/arch/arm64/boot` 下
