@@ -68,8 +68,8 @@ jobs:
 
       - name: Prepare Ccache
         run: |
-          mkdir ccache-bin
-          cd ccache-bin
+          mkdir -p ${{ env.OPPO_K10X_RootPath }}/compiler/ccache-bin
+          cd ${{ env.OPPO_K10X_RootPath }}/compiler/ccache-bin
           ln -sf "$(which ccache)" clang
           ln -sf "$(which ccache)" clang++
           ln -sf "$(which ccache)" aarch64-linux-android-gcc
