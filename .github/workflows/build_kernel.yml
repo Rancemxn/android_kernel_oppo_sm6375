@@ -14,28 +14,27 @@ jobs:
       OPPO_K10X_Compiler: ${{ github.workspace }}/OPPO_K10X_Source/compiler
 
     steps:
-      - name: Maximize Build Space
-        uses: easimon/maximize-build-space@master
-        with:
-          root-reserve-mb: 2048
-          swap-size-mb: 1024
-          remove-dotnet: 'true'
-          remove-android: 'true'
-          remove-haskell: 'true'
-          remove-codeql: 'true'
-
-      - name: Checkout (Empty)
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: 1. Install Dependencies
         run: |
           sudo apt-get update
-          
-          sudo apt-get install -y git wget automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib gcc-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python3 ccache git-lfs gnupg imagemagick libelf-dev libncurses5-dev libsdl1.2-dev gpart fuse2fs e2fsck-static icu-doc rsync adb fastboot libstdc++6 python-is-python3|| true
-          
+          sudo apt-get install -y git wget automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib gcc-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python3 ccache git-lfs gnupg imagemagick libelf-dev libncurses5-dev libsdl1.2-dev gpart fuse2fs e2fsck-static icu-doc rsync adb fastboot libstdc++6 python-is-python3
           sudo apt-get install -y gcc-aarch64-linux-gnu
+
+      - name: Cache Compiler
+        id: cache-compiler
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.OPPO_K10X_Compiler }}
+          key: ${{ runner.os }}-compiler-clang-gcc
+          
+      - name: Cache Kernel Out Folder
+        id: cache-out
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.OPPO_K10X_KernelPath }}/out
+          key: ${{ runner.os }}-kernel-out-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-kernel-out-
 
       - name: 2. Clone Source Code
         run: |
@@ -52,17 +51,15 @@ jobs:
       - name: 3. Handle Dependencies & Modules
         run: |
           cd ${{ env.OPPO_K10X_RootPath }}
-          
           echo "Moving vendor modules..."
           mv temp_modules/vendor ./vendor
-          
           echo "Merging techpack..."
           cp -r temp_modules/kernel/msm-5.4/techpack/* kernel/msm-5.4/techpack/
-          
           echo "Cleaning up temp..."
           rm -rf temp_modules
 
       - name: 4. Prepare Compiler (Clang & GCC)
+        if: steps.cache-compiler.outputs.cache-hit != 'true'
         run: |
           mkdir -p ${{ env.OPPO_K10X_Compiler }}
           cd ${{ env.OPPO_K10X_Compiler }}
@@ -80,22 +77,17 @@ jobs:
       - name: 5. Configure Build Environment
         run: |
           cd ${{ env.OPPO_K10X_KernelPath }}
-          
           echo "Modifying build.sh variables via sed..."
-
           sed -i "s|export OPPO_K10X_RootPath=.*|export OPPO_K10X_RootPath=${{ env.OPPO_K10X_RootPath }}|g" build.sh
           sed -i "s|export OPPO_K10X_KernelPath=.*|export OPPO_K10X_KernelPath=${{ env.OPPO_K10X_KernelPath }}|g" build.sh
           sed -i "s|export OPPO_K10X_Compiler=.*|export OPPO_K10X_Compiler=${{ env.OPPO_K10X_Compiler }}|g" build.sh
-          
-
           chmod +x build.sh
 
       - name: 6. Compile Kernel
         run: |
           cd ${{ env.OPPO_K10X_KernelPath }}
-          
+          mkdir -p out
           echo "Starting compilation..."
-
           ./build.sh
 
       - name: 7. Upload Artifacts
