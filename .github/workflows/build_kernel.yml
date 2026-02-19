@@ -65,16 +65,25 @@ jobs:
           git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 aarch64-linux-android-4.9 --depth=1
           git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 arm-linux-androideabi-4.9 --depth=1
 
-      - name: Configure Build Environment
+      - name: Prepare Ccache
         run: |
-          cd ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
-          ccache -M 5G
-          chmod +x build.sh
+          mkdir ccache-bin
+          cd ccache-bin
+          ln -sf "$(which ccache)" clang
+          ln -sf "$(which ccache)" clang++
+          ln -sf "$(which ccache)" aarch64-linux-android-gcc
+          ln -sf "$(which ccache)" aarch64-linux-android-g++
+          ln -sf "$(which ccache)" arm-linux-androideabi-gcc
+          ln -sf "$(which ccache)" arm-linux-androideabi-g++
 
       - name: Compile Kernel
         run: |
           cd ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
+          chmod +x build.sh
           ./build.sh
+      
+      - name: Show Ccache
+        run: 
           ccache -s
 
       - name: Upload Artifacts

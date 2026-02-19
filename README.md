@@ -59,6 +59,7 @@ rm -rf temp_modules
 ```bash
 mkdir compiler
 cd $OPPO_K10X_RootPath/compiler
+mkdir ccache-bin
 ```
 
 ### 获取 Clang
@@ -75,6 +76,18 @@ rm clang-r383902b1.tar.gz
 ```bash
 git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 aarch64-linux-android-4.9 --depth=1
 git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 arm-linux-androideabi-4.9 --depth=1
+```
+
+### 配置ccache
+
+```bash
+cd ccache-bin
+ln -sf "$(which ccache)" clang
+ln -sf "$(which ccache)" clang++
+ln -sf "$(which ccache)" aarch64-linux-android-gcc
+ln -sf "$(which ccache)" aarch64-linux-android-g++
+ln -sf "$(which ccache)" arm-linux-androideabi-gcc
+ln -sf "$(which ccache)" arm-linux-androideabi-g++
 ```
 
 ## 5. 配置环境参数
