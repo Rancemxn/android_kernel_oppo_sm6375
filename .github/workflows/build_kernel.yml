@@ -1,6 +1,7 @@
 name: Build OPPO K10x Kernel
 
 on:
+  push:
   workflow_dispatch:
 
 jobs:
