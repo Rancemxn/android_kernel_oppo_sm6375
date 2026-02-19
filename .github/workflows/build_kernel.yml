@@ -101,6 +101,6 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: kernel
+          name: OPPO_K10x_Kernel_Image
           path: |
             ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/arch/arm64/boot/Image
