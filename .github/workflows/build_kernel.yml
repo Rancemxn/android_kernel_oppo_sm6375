@@ -1,6 +1,6 @@
 name: Build OPPO K10x Kernel
 
-de
+decription: Build Android Kernel 5.4 for ColorOS 14
 
 on:
   workflow_dispatch:
