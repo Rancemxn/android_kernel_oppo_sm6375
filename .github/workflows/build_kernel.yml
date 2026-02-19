@@ -20,16 +20,25 @@ jobs:
           sudo apt-get install -y git wget automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib gcc-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python3 ccache git-lfs gnupg imagemagick libelf-dev libncurses5-dev libsdl1.2-dev gpart fuse2fs e2fsck-static icu-doc rsync adb fastboot libstdc++6 python-is-python3
           sudo apt-get install -y gcc-aarch64-linux-gnu
           mkdir -p $CCACHE_DIR
-
-      - name: Clone Source Code
-        run: |
           mkdir -p ${{ env.OPPO_K10X_RootPath }}
-          cd ${{ env.OPPO_K10X_RootPath }}
-          mkdir -p kernel
-          
-          git clone https://github.com/Rancemxn/android_kernel_oppo_sm6375.git kernel/msm-5.4 --depth 1 -b main
-          git clone https://github.com/oppo-source/android_kernel_modules_and_devicetree_oppo_sm6375.git --depth 1 -b oppo/sm6375_u_14.0.0_k10x_5g temp_modules
+          mkdir -p ${{ env.OPPO_K10X_RootPath }}/kernel
 
+      - name: Checkout Kernel Source
+        uses: actions/checkout@v4
+        with:
+          repository: Rancemxn/android_kernel_oppo_sm6375
+          path: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
+          ref: main
+          fetch-depth: 1
+      
+      - name: Checkout Modules Source
+        uses: actions/checkout@v4
+        with:
+          repository: oppo-source/android_kernel_modules_and_devicetree_oppo_sm6375
+          path: ${{ env.OPPO_K10X_RootPath }}/temp_modules
+          ref: oppo/sm6375_u_14.0.0_k10x_5g
+          fetch-depth: 1
+      
       - name: Cache Compiler
         id: cache-compiler
         uses: actions/cache@v4
