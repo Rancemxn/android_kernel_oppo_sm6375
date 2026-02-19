@@ -154,3 +154,6 @@ arch/*/configs/vendor/*_defconfig
 arch/arm64/boot/dts/vendor
 arch/arm/boot/dts/vendor
 drivers/soc/oplus/oplus_wakelock
+
+# github action
+!.github/
