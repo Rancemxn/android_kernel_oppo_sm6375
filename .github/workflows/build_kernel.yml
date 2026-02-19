@@ -105,3 +105,15 @@ jobs:
           name: OPPO_K10x_Kernel_Image
           path: |
             ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/arch/arm64/boot/Image
+        
+      - name: Debug
+        run: |
+          cd ${{ env.OPPO_K10X_RootPath }}
+          echo "grep的命令"
+          grep -r "qcol_ipbc" . --include="*.mk" --include="Kbuild" --include="Makefile" 2>/dev/null | head -20
+
+          echo "find ko的命令"
+          find . -name "*.ko" 2>/dev/null | xargs -I {} basename {} | sort | uniq | head -50
+
+          echo "find qcol.ko的命令"
+          find . -name "*qcol*.ko" -o -name "*ipbc*.ko" 2>/dev/null
