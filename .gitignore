@@ -157,3 +157,6 @@ drivers/soc/oplus/oplus_wakelock
 
 # github action
 !.github/
+
+# compiler path
+env_vars.sh

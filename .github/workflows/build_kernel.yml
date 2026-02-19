@@ -1,7 +1,6 @@
 name: Build OPPO K10x Kernel
 
 on:
-  push:
   workflow_dispatch:
 
 jobs:
@@ -11,90 +10,77 @@ jobs:
     
     env:
       OPPO_K10X_RootPath: ${{ github.workspace }}/OPPO_K10X_Source
-      OPPO_K10X_KernelPath: ${{ github.workspace }}/OPPO_K10X_Source/kernel/msm-5.4
-      OPPO_K10X_Compiler: ${{ github.workspace }}/OPPO_K10X_Source/compiler
+
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
 
     steps:
-      - name: 1. Install Dependencies
+      - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y git wget automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib gcc-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python3 ccache git-lfs gnupg imagemagick libelf-dev libncurses5-dev libsdl1.2-dev gpart fuse2fs e2fsck-static icu-doc rsync adb fastboot libstdc++6 python-is-python3
           sudo apt-get install -y gcc-aarch64-linux-gnu
 
-      - name: Cache Compiler
-        id: cache-compiler
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.OPPO_K10X_Compiler }}
-          key: ${{ runner.os }}-compiler-clang-gcc
-          
-      - name: Cache Kernel Out Folder
-        id: cache-out
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.OPPO_K10X_KernelPath }}/out
-          key: ${{ runner.os }}-kernel-out-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-kernel-out-
-
-      - name: 2. Clone Source Code
+      - name: Clone Source Code
         run: |
           mkdir -p ${{ env.OPPO_K10X_RootPath }}
           cd ${{ env.OPPO_K10X_RootPath }}
           mkdir -p kernel
           
-          echo "Cloning Kernel..."
           git clone https://github.com/Rancemxn/android_kernel_oppo_sm6375.git kernel/msm-5.4 --depth 1 -b main
-          
-          echo "Cloning Modules & Device Tree..."
           git clone https://github.com/oppo-source/android_kernel_modules_and_devicetree_oppo_sm6375.git --depth 1 -b oppo/sm6375_u_14.0.0_k10x_5g temp_modules
 
-      - name: 3. Handle Dependencies & Modules
+      - name: Cache Compiler
+        id: cache-compiler
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.OPPO_K10X_RootPath }}/compiler
+          key: ${{ runner.os }}-compiler-clang-gcc
+      
+      - name: Handle Dependencies & Modules
         run: |
           cd ${{ env.OPPO_K10X_RootPath }}
-          echo "Moving vendor modules..."
           mv temp_modules/vendor ./vendor
-          echo "Merging techpack..."
           cp -r temp_modules/kernel/msm-5.4/techpack/* kernel/msm-5.4/techpack/
-          echo "Cleaning up temp..."
           rm -rf temp_modules
 
-      - name: 4. Prepare Compiler (Clang & GCC)
+      - name: Setup ccache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ runner.os }}-ccache-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-${{ github.ref_name }}-
+            ${{ runner.os }}-ccache-
+
+      - name: Prepare Compiler
         if: steps.cache-compiler.outputs.cache-hit != 'true'
         run: |
-          mkdir -p ${{ env.OPPO_K10X_Compiler }}
-          cd ${{ env.OPPO_K10X_Compiler }}
+          mkdir -p ${{ env.OPPO_K10X_RootPath }}/compiler
+          cd ${{ env.OPPO_K10X_RootPath }}/compiler
           
-          echo "Downloading Clang..."
           wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz -O clang-r383902b1.tar.gz
           mkdir -p clang-11.0.2
           tar -xzf clang-r383902b1.tar.gz -C clang-11.0.2
           rm clang-r383902b1.tar.gz
           
-          echo "Cloning GCCs..."
           git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 aarch64-linux-android-4.9 --depth=1
           git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 arm-linux-androideabi-4.9 --depth=1
 
-      - name: 5. Configure Build Environment
+      - name: Configure Build Environment
         run: |
-          cd ${{ env.OPPO_K10X_KernelPath }}
-          echo "Modifying build.sh variables via sed..."
-          sed -i "s|export OPPO_K10X_RootPath=.*|export OPPO_K10X_RootPath=${{ env.OPPO_K10X_RootPath }}|g" build.sh
-          sed -i "s|export OPPO_K10X_KernelPath=.*|export OPPO_K10X_KernelPath=${{ env.OPPO_K10X_KernelPath }}|g" build.sh
-          sed -i "s|export OPPO_K10X_Compiler=.*|export OPPO_K10X_Compiler=${{ env.OPPO_K10X_Compiler }}|g" build.sh
+          cd ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
+          ccache -M 5G
           chmod +x build.sh
 
-      - name: 6. Compile Kernel
+      - name: Compile Kernel
         run: |
-          cd ${{ env.OPPO_K10X_KernelPath }}
-          mkdir -p out
-          echo "Starting compilation..."
+          cd ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
           ./build.sh
+          ccache -s
 
-      - name: 7. Upload Artifacts
-        if: success()
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: OPPO_K10x_Kernel_Image
           path: |
-            ${{ env.OPPO_K10X_KernelPath }}/out/arch/arm64/boot/Image
+            ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/arch/arm64/boot/Image

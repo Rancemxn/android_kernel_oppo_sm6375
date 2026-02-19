@@ -4,7 +4,6 @@
 
 *   请使用 WSL/类 Unix 环境
 *   以下操作在同一个命令行环境中进行
-*   为了行文方便，我们会准备很多环境变量
 
 ## 1. 准备系统依赖
 
@@ -53,20 +52,13 @@ cp -r temp_modules/kernel/msm-5.4/techpack/* kernel/msm-5.4/techpack/
 rm -rf temp_modules
 ```
 
-### 准备内核路径环境变量
-
-```bash
-export OPPO_K10X_KernelPath=$(pwd)/kernel/msm-5.4
-```
-
 ## 4. 准备编译器
 
 ### 创建文件夹，环境变量
 
 ```bash
 mkdir compiler
-export OPPO_K10X_Compiler=$(pwd)/compiler
-cd $OPPO_K10X_Compiler
+cd $OPPO_K10X_RootPath/compiler
 ```
 
 ### 获取 Clang
@@ -88,10 +80,10 @@ git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-l
 ## 5. 配置环境参数
 
 ```bash
-cd $OPPO_K10X_KernelPath
-sed -i "s|export OPPO_K10X_RootPath=.*|export OPPO_K10X_RootPath=${OPPO_K10X_RootPath:-$(pwd)}|g" build.sh
-sed -i "s|export OPPO_K10X_KernelPath=.*|export OPPO_K10X_KernelPath=${OPPO_K10X_KernelPath:-$(pwd)/kernel/msm-5.4}|g" build.sh
-sed -i "s|export OPPO_K10X_Compiler=.*|export OPPO_K10X_Compiler=${OPPO_K10X_Compiler:-$(pwd)/Compiler}|g" build.sh
+cd $OPPO_K10X_RootPath/kernel/msm-5.4
+cat <<EOF > env_vars.sh
+export OPPO_K10X_RootPath=${OPPO_K10X_RootPath}
+EOF
 ```
 
 ## 6. 编译
@@ -99,8 +91,8 @@ sed -i "s|export OPPO_K10X_Compiler=.*|export OPPO_K10X_Compiler=${OPPO_K10X_Com
 > **请忽略警告，除非你知道你在做什么**
 
 ```bash
-cd $OPPO_K10X_KernelPath
+cd $OPPO_K10X_Source/kernel/msm-5.4
 ./build.sh
 ```
 
-*   命令完成后，输出在：`$OPPO_K10X_KernelPath/out/arch/arm64/boot` 下
+*   命令完成后，输出在：`$OPPO_K10X_RootPath/kernel/msm-5.4/out/arch/arm64/boot` 下
