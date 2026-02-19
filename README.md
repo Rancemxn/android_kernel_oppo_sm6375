@@ -82,6 +82,7 @@ git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-l
 
 ```bash
 cd ccache-bin
+ccache -M 5G
 ln -sf "$(which ccache)" clang
 ln -sf "$(which ccache)" clang++
 ln -sf "$(which ccache)" aarch64-linux-android-gcc
