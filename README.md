@@ -64,7 +64,7 @@ cd $OPPO_K10X_RootPath/compiler
 ### 获取 Clang
 
 ```bash
-wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz -O clang-r383902b1.tar.gz
+curl -L "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz" -o clang-r383902b1.tar.gz --connect-timeout 30 --retry 5
 mkdir -p clang-11.0.2
 tar -xzf clang-r383902b1.tar.gz -C clang-11.0.2
 rm clang-r383902b1.tar.gz
