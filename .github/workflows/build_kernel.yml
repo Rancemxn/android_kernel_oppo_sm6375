@@ -57,7 +57,7 @@ jobs:
           mkdir -p ${{ env.OPPO_K10X_RootPath }}/compiler
           cd ${{ env.OPPO_K10X_RootPath }}/compiler
           
-          curl -L "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz" -o clang-r383902b1.tar.gz --connect-timeout 30 --retry 5
+          curl -fLO "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz" --connect-timeout 30 --retry 5 --retry-delay 5
           mkdir -p clang-11.0.2
           tar -xzf clang-r383902b1.tar.gz -C clang-11.0.2
           rm clang-r383902b1.tar.gz
