@@ -128,5 +128,5 @@ curl -fL "https://android.googlesource.com/platform/system/libufdt/+archive/refs
 mkdir -p libufdt
 tar -xzf libufdt.tar.gz -C libufdt
 rm libufdt.tar.gz
-python libufdt/mkdtboimg.py create dtbo.img dts/vendor/qcom/*-overlay.dtbo
+python libufdt/mkdtboimg.py create dtbo.img *-overlay.dtbo
 ```
