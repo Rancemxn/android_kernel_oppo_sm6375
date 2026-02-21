@@ -32,6 +32,7 @@ ALL_MODULES_DIR="$OPPO_K10X_RootPath/kernel/msm-5.4/out/all_modules"
 KERNEL_RELEASE=$(cat out/include/config/kernel.release)
 FAKE_ROOT="$OPPO_K10X_RootPath/kernel/msm-5.4/out/fake_root"
 FAKE_MOD_DIR="$FAKE_ROOT/lib/modules/$KERNEL_RELEASE"
+mkdir -p "$ALL_MODULES_DIR"
 mkdir -p "$FAKE_MOD_DIR"
 find out -name "*.ko" -exec "$CROSS_COMPILE"strip --strip-debug {} \; -exec cp {} "$FAKE_MOD_DIR/" \;
 cd "$FAKE_MOD_DIR"
