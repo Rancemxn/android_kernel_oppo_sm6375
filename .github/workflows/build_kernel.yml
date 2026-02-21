@@ -106,6 +106,12 @@ jobs:
           name: OPPO_K10x_Kernel_Image
           path: |
             ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/arch/arm64/boot/Image
+      
+      - name: Upload Kernel Modules
+        uses: actions/upload-artifact@v4
+        with:
+          name: OPPO_K10x_Kernel_Modules
+          path: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/**/*.ko
         
       - name: Save CCache if failure
         if: failure()
