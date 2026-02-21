@@ -65,7 +65,7 @@ mkdir ccache-bin
 ### 获取 Clang
 
 ```bash
-curl -L "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz" -o clang-r383902b1.tar.gz --connect-timeout 30 --retry 5
+curl -fL "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz" -o clang-r383902b1.tar.gz --connect-timeout 30 --retry 5 --retry-delay 5
 mkdir -p clang-11.0.2
 tar -xzf clang-r383902b1.tar.gz -C clang-11.0.2
 rm clang-r383902b1.tar.gz
@@ -105,8 +105,19 @@ EOF
 > **请忽略警告，除非你知道你在做什么**
 
 ```bash
-cd $OPPO_K10X_Source/kernel/msm-5.4
+cd $OPPO_K10X_RootPath/kernel/msm-5.4
 ./build.sh
 ```
 
 *   命令完成后，输出在：`$OPPO_K10X_RootPath/kernel/msm-5.4/out/arch/arm64/boot` 下
+
+## 7. 生成dtbo
+
+```bash
+cd $OPPO_K10X_RootPath/kernel/msm-5.4/out/arch/arm64/boot
+curl -fL "https://android.googlesource.com/platform/system/libufdt/+archive/refs/heads/main/utils/src.tar.gz" -o libufdt.tar.gz --connect-timeout 30 --retry 5 --retry-delay 5
+mkdir -p libufdt
+tar -xzf libufdt.tar.gz -C libufdt
+rm libufdt.tar.gz
+python libufdt/mkdtboimg.py create dtbo.img dts/vendor/qcom/*-overlay.dtbo
+```
