@@ -56,3 +56,5 @@ source "lib/Kconfig.debug"
 source "Documentation/Kconfig"
 
 source "kernel/Kconfig.panicflush"
+
+source " ../../vendor/qcom/opensource/wlan/qcacld-3.0/Kconfig"
