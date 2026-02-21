@@ -103,8 +103,8 @@ ln -sf $OPPO_K10X_RootPath/vendor/qcom/opensource/wlan/qcacld-3.0 qcacld-3.0
 ln -sf $OPPO_K10X_RootPath/vendor/qcom/opensource/wlan/qca-wifi-host-cmn qca-wifi-host-cmn
 ln -sf $OPPO_K10X_RootPath/vendor/qcom/opensource/wlan/fw-api fw-api
 ln -sf $OPPO_K10X_RootPath/vendor/qcom/opensource/wlan/utils utils
-echo 'source "drivers/staging/qcacld-3.0/Kconfig"' >> ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/Kconfig
-echo 'obj-$(CONFIG_QCA_CLD_WLAN) += qcacld-3.0/' >> ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/Makefile
+echo 'source "drivers/staging/qcacld-3.0/Kconfig"' >> $OPPO_K10X_RootPath/kernel/msm-5.4/drivers/staging/Kconfig
+echo 'obj-$(CONFIG_QCA_CLD_WLAN) += qcacld-3.0/' >> $OPPO_K10X_RootPath/kernel/msm-5.4/drivers/staging/Makefile
 sed -i 's|WLAN_ROOT := drivers/staging/qcacld-3.0|WLAN_ROOT := $(srctree)/$(src)|g' "$OPPO_K10X_RootPath/vendor/qcom/opensource/wlan/qcacld-3.0/Kbuild"
 ```
 
@@ -117,5 +117,13 @@ cd $OPPO_K10X_RootPath/kernel/msm-5.4
 ./build.sh
 ```
 
-*   命令完成后，输出在：`$OPPO_K10X_RootPath/kernel/msm-5.4/out/arch/arm64/boot` 下
+*   命令完成后，Image输出在：`$OPPO_K10X_RootPath/kernel/msm-5.4/out/arch/arm64/boot` 下
 
+## 获取驱动
+
+```bash
+mkdir -p $OPPO_K10X_RootPath/kernel/msm-5.4/out/all_modules
+find $OPPO_K10X_RootPath/kernel/msm-5.4/out -name "*.ko" -exec cp {} $OPPO_K10X_RootPath/kernel/msm-5.4/out/all_modules/ \;
+```
+
+*   *.ko输出在：`$OPPO_K10X_RootPath/kernel/msm-5.4/out/all_modules` 下
