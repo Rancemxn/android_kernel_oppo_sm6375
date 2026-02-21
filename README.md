@@ -98,6 +98,14 @@ cd $OPPO_K10X_RootPath/kernel/msm-5.4
 cat <<EOF > env_vars.sh
 export OPPO_K10X_RootPath=${OPPO_K10X_RootPath}
 EOF
+cd $OPPO_K10X_RootPath/kernel/msm-5.4/drivers/staging
+ln -sf $OPPO_K10X_RootPath/vendor/qcom/opensource/wlan/qcacld-3.0 qcacld-3.0
+ln -sf $OPPO_K10X_RootPath/vendor/qcom/opensource/wlan/qca-wifi-host-cmn qca-wifi-host-cmn
+ln -sf $OPPO_K10X_RootPath/vendor/qcom/opensource/wlan/fw-api fw-api
+ln -sf $OPPO_K10X_RootPath/vendor/qcom/opensource/wlan/utils utils
+echo 'source "drivers/staging/qcacld-3.0/Kconfig"' >> ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/Kconfig
+echo 'obj-$(CONFIG_QCA_CLD_WLAN) += qcacld-3.0/' >> ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/Makefile
+sed -i 's|WLAN_ROOT := drivers/staging/qcacld-3.0|WLAN_ROOT := $(srctree)/$(src)|g' "$OPPO_K10X_RootPath/vendor/qcom/opensource/wlan/qcacld-3.0/Kbuild"
 ```
 
 ## 6. 编译
@@ -111,13 +119,3 @@ cd $OPPO_K10X_RootPath/kernel/msm-5.4
 
 *   命令完成后，输出在：`$OPPO_K10X_RootPath/kernel/msm-5.4/out/arch/arm64/boot` 下
 
-## 7. 生成dtbo
-
-```bash
-cd $OPPO_K10X_RootPath/kernel/msm-5.4/out/arch/arm64/boot
-curl -fL "https://android.googlesource.com/platform/system/libufdt/+archive/refs/heads/main/utils/src.tar.gz" -o libufdt.tar.gz --connect-timeout 30 --retry 5 --retry-delay 5
-mkdir -p libufdt
-tar -xzf libufdt.tar.gz -C libufdt
-rm libufdt.tar.gz
-python libufdt/mkdtboimg.py create dtbo.img dts/vendor/qcom/*-overlay.dtbo
-```

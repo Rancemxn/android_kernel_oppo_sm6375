@@ -94,9 +94,10 @@ jobs:
           ln -sf ${{ env.OPPO_K10X_RootPath }}/vendor/qcom/opensource/wlan/qcacld-3.0 ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/qcacld-3.0
           ln -sf ${{ env.OPPO_K10X_RootPath }}/vendor/qcom/opensource/wlan/qca-wifi-host-cmn ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/qca-wifi-host-cmn
           ln -sf ${{ env.OPPO_K10X_RootPath }}/vendor/qcom/opensource/wlan/fw-api ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/fw-api
+          ln -sf ${{ env.OPPO_K10X_RootPath }}/vendor/qcom/opensource/wlan/utils ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/utils
           echo 'source "drivers/staging/qcacld-3.0/Kconfig"' >> ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/Kconfig
           echo 'obj-$(CONFIG_QCA_CLD_WLAN) += qcacld-3.0/' >> ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/Makefile
-
+          sed -i 's|WLAN_ROOT := drivers/staging/qcacld-3.0|WLAN_ROOT := $(srctree)/$(src)|g' "$OPPO_K10X_RootPath/vendor/qcom/opensource/wlan/qcacld-3.0/Kbuild"
       - name: Compile Kernel
         run: |
           cd ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
