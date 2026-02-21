@@ -32,11 +32,11 @@ jobs:
           path: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
           ref: main
           fetch-depth: 1
-      
+
       - name: Checkout Modules Source
         uses: actions/checkout@v4
         with:
-          repository: oppo-source/android_kernel_modules_and_devicetree_oppo_sm6375
+          repository: Rancemxn/android_kernel_modules_and_devicetree_oppo_sm6375
           path: ${{ env.OPPO_K10X_RootPath }}/temp_modules
           ref: oppo/sm6375_u_14.0.0_k10x_5g
           fetch-depth: 1
