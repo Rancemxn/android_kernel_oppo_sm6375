@@ -52,7 +52,6 @@ jobs:
         run: |
           cd ${{ env.OPPO_K10X_RootPath }}
           mv temp_modules/vendor ./vendor
-          cp -r temp_modules/kernel/msm-5.4/techpack/* kernel/msm-5.4/techpack/
           rm -rf temp_modules
 
       - name: Setup ccache

@@ -48,7 +48,6 @@ git clone https://github.com/oppo-source/android_kernel_modules_and_devicetree_o
 
 ```bash
 mv temp_modules/vendor ./vendor
-cp -r temp_modules/kernel/msm-5.4/techpack/* kernel/msm-5.4/techpack/
 rm -rf temp_modules
 ```
 
@@ -118,3 +117,4 @@ cd $OPPO_K10X_RootPath/kernel/msm-5.4
 ```
 
 *   命令完成后，Image输出在：`$OPPO_K10X_RootPath/kernel/msm-5.4/out/arch/arm64/boot` 下。驱动模块请查看 `$OPPO_K10X_RootPath/kernel/msm-5.4/out/all_modules`
+
