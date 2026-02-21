@@ -53,3 +53,4 @@ obj-$(CONFIG_UWB)		+= uwb/
 obj-$(CONFIG_USB_WUSB)		+= wusbcore/
 obj-$(CONFIG_QLGE)		+= qlge/
 obj-$(CONFIG_PSEUDO_SENSOR) += pseudo-sensor/
+obj-$(CONFIG_QCA_CLD_WLAN)+= qcacld-3.0/
