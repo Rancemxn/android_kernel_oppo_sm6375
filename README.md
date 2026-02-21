@@ -41,7 +41,7 @@ git clone https://github.com/Rancemxn/android_kernel_oppo_sm6375.git kernel/msm-
 ### 获取驱动、设备树
 
 ```bash
-git clone https://github.com/Rancemxn/android_kernel_modules_and_devicetree_oppo_sm6375.git --depth 1 -b oppo/sm6375_u_14.0.0_k10x_5g temp_modules
+git clone https://github.com/oppo-source/android_kernel_modules_and_devicetree_oppo_sm6375.git --depth 1 -b oppo/sm6375_u_14.0.0_k10x_5g temp_modules
 ```
 
 ## 3. 处理 Android 内核与驱动依赖关系
