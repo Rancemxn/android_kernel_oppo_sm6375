@@ -27,14 +27,16 @@ export USE_CCACHE=1
 make O=out CC="clang" sm6375_defconfig
 make O=out CC="clang" -j$(nproc)
 
-MOD_INSTALL_DIR="$OPPO_K10X_RootPath/kernel/msm-5.4/out/modules_install"
+
 ALL_MODULES_DIR="$OPPO_K10X_RootPath/kernel/msm-5.4/out/all_modules"
-mkdir -p "$MOD_INSTALL_DIR"
-mkdir -p "$ALL_MODULES_DIR"
-make O=out CC="clang" INSTALL_MOD_PATH="$MOD_INSTALL_DIR" INSTALL_MOD_STRIP=1 modules_install -j$(nproc)
 KERNEL_RELEASE=$(cat out/include/config/kernel.release)
-if [ -d "$MOD_INSTALL_DIR/lib/modules/$KERNEL_RELEASE" ]; then
-    cp -r "$MOD_INSTALL_DIR/lib/modules/$KERNEL_RELEASE/"* "$ALL_MODULES_DIR/"
-fi
-cd "$ALL_MODULES_DIR"
-find . -type f -name "*.ko" -printf "%f\n" > modules.load
+FAKE_ROOT="$OPPO_K10X_RootPath/kernel/msm-5.4/out/fake_root"
+FAKE_MOD_DIR="$FAKE_ROOT/lib/modules/$KERNEL_RELEASE"
+mkdir -p "$FAKE_MOD_DIR"
+find out -name "*.ko" -exec "$CROSS_COMPILE"strip --strip-debug {} \; -exec cp {} "$FAKE_MOD_DIR/" \;
+cd "$FAKE_MOD_DIR"
+ls -1 *.ko > modules.load
+cd "$(dirname "$0")"
+depmod -b "$FAKE_ROOT" "$KERNEL_RELEASE"
+mv "$FAKE_MOD_DIR/"* "$ALL_MODULES_DIR/"
+rm -rf "$FAKE_ROOT"
