@@ -26,3 +26,15 @@ export USE_CCACHE=1
 
 make O=out CC="clang" sm6375_defconfig
 make O=out CC="clang" -j$(nproc)
+
+MOD_INSTALL_DIR="$OPPO_K10X_RootPath/kernel/msm-5.4/out/modules_install"
+ALL_MODULES_DIR="$OPPO_K10X_RootPath/kernel/msm-5.4/out/all_modules"
+mkdir -p "$MOD_INSTALL_DIR"
+mkdir -p "$ALL_MODULES_DIR"
+make O=out CC="clang" INSTALL_MOD_PATH="$MOD_INSTALL_DIR" INSTALL_MOD_STRIP=1 modules_install -j$(nproc)
+KERNEL_RELEASE=$(cat out/include/config/kernel.release)
+if [ -d "$MOD_INSTALL_DIR/lib/modules/$KERNEL_RELEASE" ]; then
+    cp -r "$MOD_INSTALL_DIR/lib/modules/$KERNEL_RELEASE/"* "$ALL_MODULES_DIR/"
+fi
+cd "$ALL_MODULES_DIR"
+find . -type f -name "*.ko" -printf "%f\n" > modules.load

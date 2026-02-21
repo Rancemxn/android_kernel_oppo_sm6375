@@ -98,6 +98,7 @@ jobs:
           echo 'source "drivers/staging/qcacld-3.0/Kconfig"' >> ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/Kconfig
           echo 'obj-$(CONFIG_QCA_CLD_WLAN) += qcacld-3.0/' >> ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/Makefile
           sed -i 's|WLAN_ROOT := drivers/staging/qcacld-3.0|WLAN_ROOT := $(srctree)/$(src)|g' "$OPPO_K10X_RootPath/vendor/qcom/opensource/wlan/qcacld-3.0/Kbuild"
+      
       - name: Compile Kernel
         run: |
           cd ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
@@ -106,26 +107,19 @@ jobs:
       
       - name: Show Ccache
         if: always()
-        run: 
-          ccache -s
+        run: ccache -s
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: OPPO_K10x_Kernel_Image
-          path: |
-            ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/arch/arm64/boot/Image
-      
-      - name: Collect Modules
-        run: |
-          mkdir -p ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/all_modules
-          find ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out -name "*.ko" -exec cp {} ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/all_modules/ \;
+          path: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/arch/arm64/boot/Image
 
       - name: Upload Kernel Modules
         uses: actions/upload-artifact@v4
         with:
           name: OPPO_K10x_Kernel_Modules
-          path: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/all_modules/*.ko
+          path: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/all_modules/*
         
       - name: Save CCache if failure
         if: failure()

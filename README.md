@@ -117,13 +117,4 @@ cd $OPPO_K10X_RootPath/kernel/msm-5.4
 ./build.sh
 ```
 
-*   命令完成后，Image输出在：`$OPPO_K10X_RootPath/kernel/msm-5.4/out/arch/arm64/boot` 下
-
-## 获取驱动
-
-```bash
-mkdir -p $OPPO_K10X_RootPath/kernel/msm-5.4/out/all_modules
-find $OPPO_K10X_RootPath/kernel/msm-5.4/out -name "*.ko" -exec cp {} $OPPO_K10X_RootPath/kernel/msm-5.4/out/all_modules/ \;
-```
-
-*   *.ko输出在：`$OPPO_K10X_RootPath/kernel/msm-5.4/out/all_modules` 下
+*   命令完成后，Image输出在：`$OPPO_K10X_RootPath/kernel/msm-5.4/out/arch/arm64/boot` 下。驱动模块请查看 `$OPPO_K10X_RootPath/kernel/msm-5.4/out/all_modules`
