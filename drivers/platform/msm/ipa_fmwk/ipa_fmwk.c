@@ -604,7 +604,7 @@ int ipa_fmwk_register_ipa(const struct ipa_core_data *in)
 }
 EXPORT_SYMBOL(ipa_fmwk_register_ipa);
 
-bool ipa_is_ready(void)
+__weak bool ipa_is_ready(void)
 {
 	if (!ipa_fmwk_ctx)
 		return false;

@@ -882,7 +882,7 @@ int nl80211_prepare_wdev_dump(struct netlink_callback *cb,
 }
 
 /* message building helper */
-void *nl80211hdr_put(struct sk_buff *skb, u32 portid, u32 seq,
+__weak void *nl80211hdr_put(struct sk_buff *skb, u32 portid, u32 seq,
 		     int flags, u8 cmd)
 {
 	/* since there is no private header just add the generic one */
