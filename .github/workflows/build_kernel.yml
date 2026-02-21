@@ -23,7 +23,7 @@ jobs:
           mkdir -p $CCACHE_DIR
           mkdir -p ${{ env.OPPO_K10X_RootPath }}
           mkdir -p ${{ env.OPPO_K10X_RootPath }}/kernel
-          ccache -M 5G
+          ccache -M 1G
 
       - name: Checkout Kernel Source
         uses: actions/checkout@v4
