@@ -118,3 +118,4 @@ cd $OPPO_K10X_RootPath/kernel/msm-5.4
 
 *   命令完成后，Image输出在：`$OPPO_K10X_RootPath/kernel/msm-5.4/out/arch/arm64/boot` 下。驱动模块请查看 `$OPPO_K10X_RootPath/kernel/msm-5.4/out/all_modules`
 
+> 你需要将驱动文件刷入到vendor/lib/modules/5.4-gki下。同时移除vendor/lib/modules与子目录5.4-gki下的所有非自编译文件
