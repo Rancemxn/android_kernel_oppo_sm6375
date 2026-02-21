@@ -117,16 +117,4 @@ cd $OPPO_K10X_RootPath/kernel/msm-5.4
 
 *   命令完成后，Image输出在：`$OPPO_K10X_RootPath/kernel/msm-5.4/out/arch/arm64/boot` 下。驱动模块请查看 `$OPPO_K10X_RootPath/kernel/msm-5.4/out/all_modules`
 
-> 你需要将驱动文件刷入到vendor/lib/modules/5.4-gki下。同时移除vendor/lib/modules与子目录5.4-gki下的所有非自编译文件。进而刷入下面的dtbo.img
-
-## 7. 生成dtbo
-
-```bash
-cd $OPPO_K10X_RootPath/kernel/msm-5.4/out/arch/arm64/boot
-curl -fL "https://android.googlesource.com/platform/system/libufdt/+archive/refs/heads/main/utils/src.tar.gz" -o libufdt.tar.gz --connect-timeout 30 --retry 5 --retry-delay 5
-mkdir -p libufdt
-tar -xzf libufdt.tar.gz -C libufdt
-rm libufdt.tar.gz
-DTBO_LIST=$(find ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/arch/arm64/boot/dts/vendor/qcom -name "*.dtb")
-python libufdt/mkdtboimg.py create dtbo.img $DTBO_LIST
-```
+> 你需要将驱动文件刷入到vendor/lib/modules/5.4-gki下。同时移除vendor/lib/modules与子目录5.4-gki下的所有非自编译文件
