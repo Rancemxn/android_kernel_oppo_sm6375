@@ -128,5 +128,6 @@ curl -fL "https://android.googlesource.com/platform/system/libufdt/+archive/refs
 mkdir -p libufdt
 tar -xzf libufdt.tar.gz -C libufdt
 rm libufdt.tar.gz
-python libufdt/mkdtboimg.py create dtbo.img *-overlay.dtbo
+DTBO_LIST=$(find ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/arch/arm64/boot/dts/vendor/qcom -name "*.dtb")
+python libufdt/mkdtboimg.py create dtbo.img $DTBO_LIST
 ```

@@ -134,11 +134,10 @@ jobs:
           mkdir -p libufdt
           tar -xzf libufdt.tar.gz -C libufdt
           rm libufdt.tar.gz
-          DTBO_LIST=$(find ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out -name "*.dtb")
-          echo "$DTBO_FILES"
+          DTBO_LIST=$(find ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/arch/arm64/boot/dts/vendor/qcom -name "*.dtb")
           python libufdt/mkdtboimg.py create dtbo.img $DTBO_LIST
       
-      - name: Upload Kernel Modules
+      - name: Upload debo
         uses: actions/upload-artifact@v4
         with:
           name: OPPO_K10x_Kernel_dtbo
