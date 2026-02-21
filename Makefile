@@ -737,6 +737,7 @@ ifeq ($(KBUILD_EXTMOD),)
 # Objects we will link into vmlinux / subdirs we need to visit
 init-y		:= init/
 drivers-y	:= drivers/ sound/ techpack/
+obj-$(CONFIG_QCA_CLD_WLAN) += ../../vendor/qcom/opensource/wlan/qcacld-3.0/
 drivers-$(CONFIG_SAMPLES) += samples/
 net-y		:= net/
 libs-y		:= lib/
