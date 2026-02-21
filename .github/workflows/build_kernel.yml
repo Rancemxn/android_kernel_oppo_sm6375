@@ -89,6 +89,14 @@ jobs:
           ln -sf "$(which ccache)" arm-linux-androideabi-gcc
           ln -sf "$(which ccache)" arm-linux-androideabi-g++
 
+      - name: Link qcacld
+        run: |
+          ln -sf ${{ env.OPPO_K10X_RootPath }}/vendor/qcom/opensource/wlan/qcacld-3.0 ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/qcacld-3.0
+          ln -sf ${{ env.OPPO_K10X_RootPath }}/vendor/qcom/opensource/wlan/qca-wifi-host-cmn ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/qca-wifi-host-cmn
+          ln -sf ${{ env.OPPO_K10X_RootPath }}/vendor/qcom/opensource/wlan/fw-api ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/fw-api
+          echo 'source "drivers/staging/qcacld-3.0/Kconfig"' >> ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/Kconfig
+          echo 'obj-$(CONFIG_QCA_CLD_WLAN) += qcacld-3.0/' >> ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/Makefile
+
       - name: Compile Kernel
         run: |
           cd ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
