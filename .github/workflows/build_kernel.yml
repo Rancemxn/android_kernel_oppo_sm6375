@@ -146,5 +146,5 @@ jobs:
       - name: debug
         uses: actions/upload-artifact@v4
         with:
-          name: OPPO_K10x_Kernel_dtbo
+          name: debug
           path: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/arch/arm64/boot/dts
