@@ -112,6 +112,28 @@ jobs:
         run: |
           find ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out -type f \( -name "*.dtb" -o -name "*.dtbo" \) -print
       
+      - name: Generate dtbo
+        run: |
+          cd ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/arch/arm64/boot
+          curl -fL "https://android.googlesource.com/platform/system/libufdt/+archive/refs/heads/main/utils/src.tar.gz" -o libufdt.tar.gz --connect-timeout 30 --retry 5 --retry-delay 5
+          mkdir -p libufdt
+          tar -xzf libufdt.tar.gz -C libufdt
+          rm libufdt.tar.gz
+          DTBO_LIST=$(find dts/vendor -name "*.dtbo")
+    
+          if echo "$DTBO_LIST" | grep -q "oscar"; then
+              echo "Found OPPO Oscar specific DTBOs, proceed to pack..."
+          else
+              echo "Warning: Oscar DTBOs not found! Your touch might still lag."
+          fi
+          
+          echo "Files being packed into dtbo.img:"
+          echo "$DTBO_LIST"
+          
+          python3 libufdt/mkdtboimg.py create dtbo.img --page_size=4096 --version=0 $DTBO_LIST
+          
+          ls -lh dtbo.img
+
       - name: Upload DTBO/DTB Files
         uses: actions/upload-artifact@v4
         with:
