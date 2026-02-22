@@ -141,3 +141,4 @@ jobs:
           path: |
             ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/**/*.dtb
             ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/**/*.dtbo
+            ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/arch/arm64/boot/dtbo.img
