@@ -120,21 +120,24 @@ jobs:
           mkdir -p libufdt && tar -xzf libufdt.tar.gz -C libufdt
           
           REAL_DTBO=$(find dts/vendor -name "*-216EA-overlay.dtbo" | head -n 1)
-          if [ -z "$REAL_DTBO" ]; then
-              echo "Error: 216EA DTBO not found!"
-              exit 1
+          
+          PLACEHOLDER_DTBO=$(find dts/vendor -name "blair-atp-overlay.dtbo" | head -n 1)
+          if [ -z "$PLACEHOLDER_DTBO" ]; then
+              PLACEHOLDER_DTBO=$(find dts/vendor -name "*.dtbo" | grep -v "oscar" | head -n 1)
           fi
 
-          echo '/dts-v1/; / {};' > dummy.dts
-          dtc -I dts -O dtb -o dummy.dtbo dummy.dts
           
           mkdir -p final_dtbos
           
           for i in $(seq -f "%02g" 0 33); do
-              cp dummy.dtbo "final_dtbos/idx_${i}.dtbo"
+              cp "$PLACEHOLDER_DTBO" "final_dtbos/idx_${i}.dtbo"
           done
           
           cp "$REAL_DTBO" "final_dtbos/idx_34.dtbo"
+          
+          for i in $(seq -f "%02g" 35 57); do
+              cp "$PLACEHOLDER_DTBO" "final_dtbos/idx_${i}.dtbo"
+          done
           
           python3 libufdt/mkdtboimg.py create dtbo.img --page_size=4096 --version=0 final_dtbos/*.dtbo
           
