@@ -35,7 +35,7 @@ mkdir -p kernel
 ### 获取内核
 
 ```bash
-git clone https://github.com/Rancemxn/android_kernel_oppo_sm6375.git kernel/msm-5.4 --depth 1 -b main
+git clone --recursive https://github.com/Rancemxn/android_kernel_oppo_sm6375.git kernel/msm-5.4 --depth 1 -b main
 ```
 
 ### 获取驱动、设备树

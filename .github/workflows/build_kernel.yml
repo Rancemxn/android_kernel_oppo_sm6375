@@ -32,6 +32,7 @@ jobs:
           path: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
           ref: main
           fetch-depth: 1
+          submodules: 'recursive'
 
       - name: Checkout Modules Source
         uses: actions/checkout@v4
