@@ -24,7 +24,6 @@ export CLANG_PATH=$OPPO_K10X_RootPath/compiler/clang-12.0.5/bin
 make O=out CC="clang" LLVM=1 sm6375_defconfig
 make O=out CC="clang" LLVM=1 -j$(nproc)
 
-
 ALL_MODULES_DIR="$OPPO_K10X_RootPath/kernel/msm-5.4/out/all_modules"
 KERNEL_RELEASE=$(cat out/include/config/kernel.release)
 FAKE_ROOT="$OPPO_K10X_RootPath/kernel/msm-5.4/out/fake_root"

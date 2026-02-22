@@ -51,7 +51,6 @@ jobs:
             ${{ runner.os }}-ccache-
 
       - name: Prepare Compiler
-        if: steps.cache-compiler.outputs.cache-hit != 'true'
         run: |
           mkdir -p ${{ env.OPPO_K10X_RootPath }}/compiler
           cd ${{ env.OPPO_K10X_RootPath }}/compiler
