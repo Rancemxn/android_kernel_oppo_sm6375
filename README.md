@@ -64,10 +64,10 @@ mkdir ccache-bin
 ### 获取 Clang
 
 ```bash
-curl -fL "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz" -o clang-r383902b1.tar.gz --connect-timeout 30 --retry 5 --retry-delay 5
-mkdir -p clang-11.0.2
-tar -xzf clang-r383902b1.tar.gz -C clang-11.0.2
-rm clang-r383902b1.tar.gz
+curl -fL "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/tags/android-14.0.0_r0.140/clang-r416183b.tar.gz" -o clang-r416183b.tar.gz --connect-timeout 30 --retry 5 --retry-delay 5
+mkdir -p clang-12.0.5
+tar -xzf clang-r416183b.tar.gz -C clang-12.0.5
+rm clang-r416183b.tar.gz
 ```
 
 ### 获取 gcc

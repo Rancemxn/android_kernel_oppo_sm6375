@@ -18,7 +18,7 @@ jobs:
       - name: Make Build Environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y git wget automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib gcc-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python3 ccache git-lfs gnupg imagemagick libelf-dev libncurses5-dev libsdl1.2-dev gpart fuse2fs e2fsck-static icu-doc rsync adb fastboot libstdc++6 python-is-python3
+          sudo apt-get install -y git wget automake flex lzop eza bison gperf build-essential zip curl zlib1g-dev g++-multilib gcc-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python3 ccache git-lfs gnupg imagemagick libelf-dev libncurses5-dev libsdl1.2-dev gpart fuse2fs e2fsck-static icu-doc rsync adb fastboot libstdc++6 python-is-python3
           sudo apt-get install -y gcc-aarch64-linux-gnu
           mkdir -p $CCACHE_DIR
           mkdir -p ${{ env.OPPO_K10X_RootPath }}
@@ -63,10 +63,10 @@ jobs:
           mkdir -p ${{ env.OPPO_K10X_RootPath }}/compiler
           cd ${{ env.OPPO_K10X_RootPath }}/compiler
           
-          curl -fL "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz" -o clang-r383902b1.tar.gz --connect-timeout 30 --retry 5 --retry-delay 5
-          mkdir -p clang-11.0.2
-          tar -xzf clang-r383902b1.tar.gz -C clang-11.0.2
-          rm clang-r383902b1.tar.gz
+          curl -fL "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/tags/android-14.0.0_r0.140/clang-r416183b.tar.gz" -o clang-r416183b.tar.gz --connect-timeout 30 --retry 5 --retry-delay 5
+          mkdir -p clang-12.0.5
+          tar -xzf clang-r416183b.tar.gz -C clang-12.0.5
+          rm clang-r416183b.tar.gz
           
           git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-gnu-9.3 aarch64-linux-android-9.3 --depth=1
           git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 arm-linux-androideabi-4.9 --depth=1
@@ -123,4 +123,3 @@ jobs:
           name: OPPO_K10x_Kernel_Modules
           path: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/all_modules/*
         
-      

@@ -14,11 +14,11 @@ fi
 
 export ARCH="arm64"
 export SUBARCH="arm64"
-export PATH="$OPPO_K10X_RootPath/compiler/ccache-bin:$OPPO_K10X_RootPath/compiler/clang-11.0.2/bin:$OPPO_K10X_RootPath/compiler/aarch64-linux-android-9.3/bin:$OPPO_K10X_RootPath/compiler/arm-linux-androideabi-4.9/bin:$PATH"
+export PATH="$OPPO_K10X_RootPath/compiler/ccache-bin:$OPPO_K10X_RootPath/compiler/clang-12.0.5/bin:$OPPO_K10X_RootPath/compiler/aarch64-linux-android-9.3/bin:$OPPO_K10X_RootPath/compiler/arm-linux-androideabi-4.9/bin:$PATH"
 export CROSS_COMPILE="aarch64-linux-android-"
 export CROSS_COMPILE_ARM32="arm-linux-androideabi-"
 export CLANG_TRIPLE="aarch64-linux-gnu-"
-export CLANG_PATH=$OPPO_K10X_RootPath/compiler/clang-11.0.2/bin
+export CLANG_PATH=$OPPO_K10X_RootPath/compiler/clang-12.0.5/bin
 
 make O=out CC="clang" LLVM=1 sm6375_defconfig
 make O=out CC="clang" LLVM=1 -j$(nproc)
