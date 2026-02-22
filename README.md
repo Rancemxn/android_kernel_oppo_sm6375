@@ -64,7 +64,7 @@ mkdir ccache-bin
 ### 获取 Clang
 
 ```bash
-curl -fL "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/tags/android-14.0.0_r0.140/clang-r416183b.tar.gz" -o clang-r416183b.tar.gz --connect-timeout 30 --retry 5 --retry-delay 5
+curl -fL "https://github.com/Rancemxn/android_kernel_oppo_sm6375/releases/download/tool-develop/linux-x86-refs_tags_android-14.0.0_r0.140-clang-r416183b.tar.gz" -o clang-r416183b.tar.gz --connect-timeout 30 --retry 5 --retry-delay 5
 mkdir -p clang-12.0.5
 tar -xzf clang-r416183b.tar.gz -C clang-12.0.5
 rm clang-r416183b.tar.gz
