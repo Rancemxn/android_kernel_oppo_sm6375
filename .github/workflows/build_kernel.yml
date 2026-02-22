@@ -47,14 +47,8 @@ jobs:
         with:
           path: ${{ env.OPPO_K10X_RootPath }}/compiler
           key: ${{ runner.os }}-compiler-clang-gcc
-      
-      - name: Handle Dependencies
-        run: |
-          cd ${{ env.OPPO_K10X_RootPath }}
-          mv temp_modules/vendor ./vendor
-          rm -rf temp_modules
 
-      - name: Setup ccache
+      - name: Cache ccache
         uses: actions/cache@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -69,7 +63,7 @@ jobs:
           mkdir -p ${{ env.OPPO_K10X_RootPath }}/compiler
           cd ${{ env.OPPO_K10X_RootPath }}/compiler
           
-          curl -fLO "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz" --connect-timeout 30 --retry 5 --retry-delay 5
+          curl -fL "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-qpr2-release/clang-r383902b1.tar.gz" -o clang-r383902b1.tar.gz --connect-timeout 30 --retry 5 --retry-delay 5
           mkdir -p clang-11.0.2
           tar -xzf clang-r383902b1.tar.gz -C clang-11.0.2
           rm clang-r383902b1.tar.gz
@@ -77,8 +71,6 @@ jobs:
           git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-gnu-9.3 aarch64-linux-android-9.3 --depth=1
           git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 arm-linux-androideabi-4.9 --depth=1
 
-      - name: Prepare Ccache
-        run: |
           mkdir -p ${{ env.OPPO_K10X_RootPath }}/compiler/ccache-bin
           cd ${{ env.OPPO_K10X_RootPath }}/compiler/ccache-bin
           ln -sf "$(which ccache)" clang
@@ -88,8 +80,12 @@ jobs:
           ln -sf "$(which ccache)" arm-linux-androideabi-gcc
           ln -sf "$(which ccache)" arm-linux-androideabi-g++
 
-      - name: Link qcacld
+      - name: Handle Dependencies
         run: |
+          cd ${{ env.OPPO_K10X_RootPath }}
+          mv temp_modules/vendor ./vendor
+          rm -rf temp_modules
+
           ln -sf ${{ env.OPPO_K10X_RootPath }}/vendor/qcom/opensource/wlan/qcacld-3.0 ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/qcacld-3.0
           ln -sf ${{ env.OPPO_K10X_RootPath }}/vendor/qcom/opensource/wlan/qca-wifi-host-cmn ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/qca-wifi-host-cmn
           ln -sf ${{ env.OPPO_K10X_RootPath }}/vendor/qcom/opensource/wlan/fw-api ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/fw-api
@@ -108,6 +104,13 @@ jobs:
         if: always()
         run: ccache -s
 
+      - name: Save CCache if failure
+        if: failure()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ runner.os }}-ccache-${{ github.ref_name }}-${{ github.run_id }}
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -120,9 +123,4 @@ jobs:
           name: OPPO_K10x_Kernel_Modules
           path: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/all_modules/*
         
-      - name: Save CCache if failure
-        if: failure()
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ${{ runner.os }}-ccache-${{ github.ref_name }}-${{ github.run_id }}
+      
