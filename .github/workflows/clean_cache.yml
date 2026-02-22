@@ -1,0 +1,24 @@
+name: Cache Cleaner
+
+on:
+  workflow_dispatch:
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete all caches
+        run: |
+          
+          REPO="${{ github.repository }}"
+          
+          gh extension install actions/gh-actions-cache
+          
+          gh actions-cache list -R $REPO
+          
+          for cache_key in $(gh actions-cache list -R $REPO | cut -f 1); do
+            gh actions-cache delete "$cache_key" -R $REPO --confirm
+          done
+          
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
