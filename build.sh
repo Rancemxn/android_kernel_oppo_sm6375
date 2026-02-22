@@ -30,7 +30,7 @@ FAKE_ROOT="$OPPO_K10X_RootPath/kernel/msm-5.4/out/fake_root"
 FAKE_MOD_DIR="$FAKE_ROOT/lib/modules/$KERNEL_RELEASE"
 mkdir -p "$ALL_MODULES_DIR"
 mkdir -p "$FAKE_MOD_DIR"
-find out -name "*.ko" -exec "$CROSS_COMPILE"strip --strip-debug {} \; -exec cp {} "$FAKE_MOD_DIR/" \;
+find . -name "*.ko" -exec cp {} "$FAKE_MOD_DIR/" \;
 cd "$FAKE_MOD_DIR"
 mv wlan.ko qca_cld3_wlan.ko
 ls -1 *.ko > modules.load
