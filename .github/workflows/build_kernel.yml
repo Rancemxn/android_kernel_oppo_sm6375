@@ -116,44 +116,28 @@ jobs:
         run: |
           cd ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/arch/arm64/boot
           
-          # 1. 下载工具（mkdtboimg.py）
           curl -fL "https://android.googlesource.com/platform/system/libufdt/+archive/refs/heads/main/utils/src.tar.gz" -o libufdt.tar.gz
           mkdir -p libufdt && tar -xzf libufdt.tar.gz -C libufdt
           
-          # 2. 找到你那台 K10x 真正的补丁文件 (216EA)
           REAL_DTBO=$(find dts/vendor -name "*-216EA-overlay.dtbo" | head -n 1)
           if [ -z "$REAL_DTBO" ]; then
               echo "Error: 216EA DTBO not found!"
               exit 1
           fi
 
-          # 3. 创建一个几乎不占空间的“哑元”DTBO (Dummy)
-          # 我们手动生成一个最简单的设备树源文件并编译它
           echo '/dts-v1/; / {};' > dummy.dts
           dtc -I dts -O dtb -o dummy.dtbo dummy.dts
           
           mkdir -p final_dtbos
           
-          # 4. 填充索引 0 到 33 (总共 34 个位置) 为哑元文件
-          # 哑元文件极小，34 个加起来不到 100KB
           for i in $(seq -f "%02g" 0 33); do
               cp dummy.dtbo "final_dtbos/idx_${i}.dtbo"
           done
           
-          # 5. 在索引 34 (即第 35 个位置) 放入真正的 216EA 补丁
-          # 这个补丁带 Symbols，大约 500-600KB
           cp "$REAL_DTBO" "final_dtbos/idx_34.dtbo"
           
-          # 6. 打包。此时 dtbo.img 总大小应该在 1MB 左右
           python3 libufdt/mkdtboimg.py create dtbo.img --page_size=4096 --version=0 final_dtbos/*.dtbo
           
-          echo "========================================"
-          echo "Partition Limit: 25,165,824 bytes (24MB)"
-          echo "Generated Image Size: $(stat -c%s dtbo.img) bytes"
-          echo "========================================"
-          
-          # 验证第 34 个索引是否正确
-          python3 libufdt/mkdtboimg.py dump dtbo.img | grep "index: 34" -A 5
 
       - name: Upload DTBO/DTB Files
         uses: actions/upload-artifact@v4
