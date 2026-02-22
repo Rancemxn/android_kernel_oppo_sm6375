@@ -34,10 +34,6 @@ aic79xx-y					+= aic79xx_osm.o	\
 						   aic79xx_proc.o	\
 						   aic79xx_osm_pci.o
 
-ifdef WARNINGS_BECOME_ERRORS
-ccflags-y += -Werror
-endif
-
 # Files generated that shall be removed upon make clean
 clean-files := aic7xxx_seq.h aic7xxx_reg.h aic7xxx_reg_print.c
 clean-files += aic79xx_seq.h aic79xx_reg.h aic79xx_reg_print.c

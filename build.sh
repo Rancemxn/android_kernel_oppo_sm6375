@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 if [ -z "$OPPO_K10X_RootPath" ]; then
     CONF_FILE="$(dirname "$(readlink -f "$0")")/env_vars.sh"

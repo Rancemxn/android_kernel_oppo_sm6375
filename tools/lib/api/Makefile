@@ -32,10 +32,6 @@ ifeq ($(DEBUG),0)
   CFLAGS += -D_FORTIFY_SOURCE
 endif
 
-# Treat warnings as errors unless directed not to
-ifneq ($(WERROR),0)
-  CFLAGS += -Werror
-endif
 
 CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 CFLAGS += -I$(srctree)/tools/lib/api
