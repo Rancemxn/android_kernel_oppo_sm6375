@@ -32,6 +32,7 @@ FAKE_MOD_DIR="$FAKE_ROOT/lib/modules/$KERNEL_RELEASE"
 mkdir -p "$ALL_MODULES_DIR"
 mkdir -p "$FAKE_MOD_DIR"
 find . -name "*.ko" -exec cp {} "$FAKE_MOD_DIR/" \;
+find "$FAKE_MOD_DIR" -name "*.ko" -exec "$OPPO_K10X_RootPath/compiler/clang-12.0.5/bin/llvm-strip" --strip-debug {} \;
 cd "$FAKE_MOD_DIR"
 mv wlan.ko qca_cld3_wlan.ko
 ls -1 *.ko > modules.load
