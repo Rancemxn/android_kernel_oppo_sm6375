@@ -26,13 +26,19 @@ jobs:
           ccache -M 5G
 
       - name: Checkout Kernel Source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: Rancemxn/android_kernel_oppo_sm6375
           path: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
           ref: main
           fetch-depth: 1
-          submodules: 'recursive'
+          submodules: false
+
+      - name: Checkout Submodules
+        working-directory: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
+        run: |
+          git submodule init
+          git submodule update --init --recursive
 
       - name: Checkout Modules Source
         uses: actions/checkout@v4
