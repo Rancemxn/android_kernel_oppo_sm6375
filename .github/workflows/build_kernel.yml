@@ -101,7 +101,7 @@ jobs:
       - name: Set Swap Space
         uses: pierotofy/set-swap-space@master
         with:
-          swap-size-gb: 10
+          swap-size-gb: 12
 
       - name: Compile Kernel
         working-directory: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
