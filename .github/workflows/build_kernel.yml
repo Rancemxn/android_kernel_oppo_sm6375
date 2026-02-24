@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     name: Compile Kernel
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     
     env:
       OPPO_K10X_RootPath: ${{ github.workspace }}/OPPO_K10X_Source
@@ -34,22 +34,22 @@ jobs:
           fetch-depth: 1
           submodules: false
 
-      - name: Checkout Submodules
-        working-directory: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
-        run: |
-          git submodule init
-          git submodule update --init --recursive
-
       - name: Checkout Modules Source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: oppo-source/android_kernel_modules_and_devicetree_oppo_sm6375
           path: ${{ env.OPPO_K10X_RootPath }}/temp_modules
           ref: oppo/sm6375_u_14.0.0_k10x_5g
           fetch-depth: 1
 
+      - name: Checkout Submodules
+        working-directory: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
+        run: |
+          git submodule init
+          git submodule update --init --recursive
+
       - name: Cache ccache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ${{ runner.os }}-ccache-${{ github.ref_name }}-${{ github.run_id }}
@@ -80,8 +80,8 @@ jobs:
           ln -sf "$(which ccache)" arm-linux-androideabi-g++
 
       - name: Handle Dependencies
+        working-directory: ${{ env.OPPO_K10X_RootPath }}
         run: |
-          cd ${{ env.OPPO_K10X_RootPath }}
           mv temp_modules/vendor ./vendor
           rm -rf temp_modules
 
@@ -92,10 +92,15 @@ jobs:
           echo 'source "drivers/staging/qcacld-3.0/Kconfig"' >> ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/Kconfig
           echo 'obj-$(CONFIG_QCA_CLD_WLAN) += qcacld-3.0/' >> ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/drivers/staging/Makefile
           sed -i 's|WLAN_ROOT := drivers/staging/qcacld-3.0|WLAN_ROOT := $(srctree)/$(src)|g' "${{ env.OPPO_K10X_RootPath }}/vendor/qcom/opensource/wlan/qcacld-3.0/Kbuild"
-      
+
+      - name: Set Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 10
+
       - name: Compile Kernel
+        working-directory: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
         run: |
-          cd ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4
           chmod +x build.sh
           ./build.sh
       
@@ -104,13 +109,13 @@ jobs:
         run: ccache -s
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: OPPO_K10x_Kernel_Image
           path: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/arch/arm64/boot/Image
 
       - name: Upload Kernel Modules
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: OPPO_K10x_Kernel_Modules
           path: ${{ env.OPPO_K10X_RootPath }}/kernel/msm-5.4/out/all_modules/*
