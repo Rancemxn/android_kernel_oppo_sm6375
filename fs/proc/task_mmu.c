@@ -937,7 +937,7 @@ static int show_smap(struct seq_file *m, void *v)
 				seq_printf(m, "ProtectionKey:  %8u\n", vma_pkey(vma));
 		seq_puts(m, "VmFlags: mr mw me");
 		seq_putc(m, '\n');
-		goto show_pad;
+		return 0;
 	}
 #endif
 
