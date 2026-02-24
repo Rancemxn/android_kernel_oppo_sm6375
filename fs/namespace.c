@@ -332,7 +332,10 @@ static struct mount *alloc_vfsmnt(const char *name)
 		err = mnt_alloc_id(mnt);
 		if (err)
 			goto out_free_cache;
-
+#ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
+	// Make sure mnt->mnt.susfs_mnt_id_backup is initialized every time.
+		mnt->mnt.susfs_mnt_id_backup = 0;
+#endif
 		if (name) {
 			mnt->mnt_devname = kstrdup_const(name, GFP_KERNEL);
 			if (!mnt->mnt_devname)
@@ -1876,10 +1879,6 @@ static inline bool may_mandlock(void)
 	pr_warn("VFS: \"mand\" mount option not supported");
 	return false;
 }
-#endif
-#ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
-		// Make sure mnt->mnt.susfs_mnt_id_backup is initialized every time.
-		mnt->mnt.susfs_mnt_id_backup = 0;
 #endif
 
 static int can_umount(const struct path *path, int flags)
@@ -4312,40 +4311,32 @@ const struct proc_ns_operations mntns_operations = {
 };
 
 #ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
-/* Reorder the mnt_id after all sus mounts are umounted during ksu_handle_setuid() */
 void susfs_reorder_mnt_id(void) {
 	struct mnt_namespace *mnt_ns = current->nsproxy->mnt_ns;
 	struct mount *mnt;
 	int first_mnt_id = 0;
 
-	// Do not reorder the mnt_id if there is no any ksu mount at all
 	if (atomic64_read(&susfs_ksu_mounts) == 0)
 		return;
 
-	down_read(&namespace_sem); // needed when manipulating mnt_namespace
-	lock_ns_list(mnt_ns); // needed when traversing mnt_ns->list
-	lock_mount_hash(); // needed when modifying mount
+	down_read(&namespace_sem);
+	
+	lock_mount_hash();
 
-	// - It is safe here as there should not be any first mnt with the sus mnt_id,
-	//   mount cloned by ksu proc is already handled in clone_mnt()
 	first_mnt_id = list_first_entry(&mnt_ns->list, struct mount, mnt_list)->mnt_id;
 	list_for_each_entry(mnt, &mnt_ns->list, mnt_list) {
-		// - We need to use mnt_is_cursor() to check if mnt is being looked up in
-		//   /proc/[mounts|mountinfo|mountstat], since mounts_open_common() will set 
-		//   the flag MNT_CURSOR on p->cursor.mnt.mnt_flags, skip it if so
-		if (mnt_is_cursor(mnt))
+		
+		if (mnt->mnt.mnt_flags & MNT_CURSOR)
 			continue;
-		// It is very important that we don't reorder the sus mount if it is not umounted
+			
 		if (mnt->mnt_id == DEFAULT_KSU_MNT_ID)
 			continue;
-		// We just still explicitly tell compiler not to optimizie this
+			
 		WRITE_ONCE(mnt->mnt.susfs_mnt_id_backup, READ_ONCE(mnt->mnt_id));
 		WRITE_ONCE(mnt->mnt_id, first_mnt_id++);
 	}
 
 	unlock_mount_hash();
-	unlock_ns_list(mnt_ns);
 	up_read(&namespace_sem);
 }
 #endif
-
