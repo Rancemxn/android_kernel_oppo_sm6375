@@ -4326,9 +4326,6 @@ void susfs_reorder_mnt_id(void) {
 	first_mnt_id = list_first_entry(&mnt_ns->list, struct mount, mnt_list)->mnt_id;
 	list_for_each_entry(mnt, &mnt_ns->list, mnt_list) {
 		
-		if (mnt->mnt.mnt_flags & MNT_CURSOR)
-			continue;
-			
 		if (mnt->mnt_id == DEFAULT_KSU_MNT_ID)
 			continue;
 			
