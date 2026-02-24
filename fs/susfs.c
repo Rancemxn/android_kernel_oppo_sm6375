@@ -985,7 +985,7 @@ static int susfs_handle_sdcard_inode_event(struct fsnotify_group *group,
 	return 0;
 }
 
-static const struct fsnotify_ops susfs_sdcard_fsnotify_ops = {
+static const struct fsnotify_ops fsnotify_ops = {
 	.handle_event = susfs_handle_sdcard_inode_event,
 };
 
