@@ -967,13 +967,12 @@ static int watch_one_dir(struct watch_dir *wd)
  */
 static int susfs_handle_sdcard_inode_event(struct fsnotify_group *group,
 					   struct inode *inode,
-					   struct fsnotify_mark *inode_mark,
-					   struct fsnotify_mark *vfsmount_mark,
 					   u32 mask, const void *data, int data_type,
-					   const unsigned char *file_name, u32 cookie,
+					   const struct qstr *file_name, u32 cookie,
 					   struct fsnotify_iter_info *iter_info)
 {
-	if (!file_name || strcmp(file_name, "Android") != 0)
+	if (!file_name || file_name->len != 7 ||
+	    memcmp(file_name->name, "Android", 7))
 		return 0;
 
 	if (test_and_set_bit(0, &sdcard_cleanup_scheduled))
@@ -986,7 +985,7 @@ static int susfs_handle_sdcard_inode_event(struct fsnotify_group *group,
 	return 0;
 }
 
-static const struct fsnotify_ops fsnotify_ops = {
+static const struct fsnotify_ops susfs_sdcard_fsnotify_ops = {
 	.handle_event = susfs_handle_sdcard_inode_event,
 };
 
